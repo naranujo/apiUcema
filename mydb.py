@@ -1,14 +1,16 @@
 import sqlite3
 
-class ownapi():
+class Ownapi:
         
-    def create_user(name):
-        query = 'INSERT INTO Users (nombre) VALUES (("%s"))' % name
+    def create_user(nombre_de_usuario,email,nombre,apellido):
+        # query = 'INSERT INTO Users (nombre) VALUES (("'+name+'"))'
+        query = 'INSERT INTO Users (nombre_de_usuario,email,nombre,apellido) VALUES ("%s","%s","%s","%s")' % (nombre_de_usuario,email,nombre,apellido)
+
         with sqlite3.connect("proyecto-ucema.db") as conn:
             cursor = conn.cursor()
             result = cursor.execute(query)
             conn.commit()
-        return {"status":"Ok! Created user %s" % name}
+        return {"status":"Ok! Created user %s" % nombre_de_usuario}
 
     def get_users():
         usuarios = []
@@ -17,9 +19,13 @@ class ownapi():
             cursor = conn.cursor()
             result = cursor.execute(query)
             conn.commit()
-        for key,value in result:
+        for id,userName,email,name,lastName in result:
             dicc = {
-                '%s' % key : '%s' % value
+                "id": id,
+                "nombre de usuario": userName,
+                "email": email,
+                "nombre": name,
+                "apellido": lastName
             }
             usuarios.append(dicc)
         return usuarios

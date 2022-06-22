@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
-from omdbapi import thirdPartyAPI
-from mydb import ownapi as mydb
+from omdbapi import ThirdPartyAPI
+from mydb import Ownapi as mydb
 
 app = Flask(__name__)
 
@@ -8,49 +8,32 @@ app = Flask(__name__)
 
 apiKey = ""
 
-@app.route('/', methods=['GET'])
-def index():
-    dicc = {
-        "terceros" : thirdPartyAPI(apiKey).index(),
-        "propio" : {
-            "endpoints" : {
-                "localhost:4000/create-user" : "create-user (POST)",
-                "localhost:4000/users" : "get-users (GET)",
-                "localhost:4000/user/<<user_name>>" : "get-user-by-name (GET)",
-                "localhost:4000/user/<<user_id>>" : "get-user-by-id (GET)",
-                "localhost:4000/edit-user/<<user_id>>/<<user_name>>" : "update-user (PUT)",
-                "localhost:4000/delete-user/<<user_id>>" : "delete-user (DELETE)",
-            }
-        }
-    }
-    return jsonify(dicc)
-
 @app.route('/movies/', methods=['GET'])
 def getMovies():
-    return jsonify(thirdPartyAPI(apiKey).getMovies())
+    return jsonify(ThirdPartyAPI(apiKey).getMovies())
 
 @app.route('/tvshows/', methods=['GET'])
 def getTVShows():
-    return jsonify(thirdPartyAPI(apiKey).getTVShows())
+    return jsonify(ThirdPartyAPI(apiKey).getTVShows())
 
 @app.route('/genres/<string:genre_type>', methods=['GET'])
 def getGenresMovie(genre_type:str="movie"):
-    return jsonify(thirdPartyAPI(apiKey).getGenres(genre_type))
+    return jsonify(ThirdPartyAPI(apiKey).getGenres(genre_type))
 
 @app.route('/movie/<string:movie_name>', methods=['GET'])
 def getMovie(movie_name):
-    return jsonify(thirdPartyAPI(apiKey).getMovie(movie_name))
+    return jsonify(ThirdPartyAPI(apiKey).getMovie(movie_name))
 
 @app.route('/tvshow/<string:tvshow_name>', methods=['GET'])
 def getTVShow(tvshow_name):
-    return jsonify(thirdPartyAPI(apiKey).getTVShow(tvshow_name))
+    return jsonify(ThirdPartyAPI(apiKey).getTVShow(tvshow_name))
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # # Rutas API propia
 @app.route('/create-user', methods=['POST'])
 def createUser():
-    return jsonify(mydb.create_user(request.json['nombre']))
+    return jsonify(mydb.create_user(request.json['nombre_de_usuario'],request.json['email'],request.json['nombre'],request.json['apellido']))
 
 @app.route('/users', methods=['GET'])
 def getUsers():
